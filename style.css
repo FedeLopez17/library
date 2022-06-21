@@ -1,0 +1,16 @@
+body{
+    margin: 0;
+}
+
+header{
+    background-color: red;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    padding: 10px;
+    margin: auto;
+    border-style: solid;
+}
