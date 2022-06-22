@@ -1,16 +1,42 @@
-body{
+html, body{
     margin: 0;
+    height: 100%
 }
+
 
 header{
     background-color: red;
+    height: 100px;
 }
 
-form{
+main{
+    height: calc(100% - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+table{
+    border: solid black 3px;
+    margin-top: 100px;
+}
+
+.outer-modal{
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.form-modal{
     display: flex;
     flex-direction: column;
     width: 200px;
     padding: 10px;
-    margin: auto;
     border-style: solid;
+    margin-top: -100px;
 }
