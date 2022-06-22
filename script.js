@@ -1,4 +1,4 @@
-const ADD_NEW_BOOK_BUTTON = document.querySelector("button");
+const ADD_NEW_BOOK_BUTTON = document.querySelector("i[title='Add new book!']");
 const BODY = document.querySelector("body");
 const table = document.querySelector("main > table > tbody");
 
@@ -62,7 +62,9 @@ function populateTableWithBooks(){
         let readStatus = document.createElement("td");
         readStatus.innerText = (book.readStatus) ? "read" : "unread"
         let removeButtonCell = document.createElement("td");
-        let removeButton = document.createElement("button");
+        let removeButton = document.createElement("i");
+        removeButton.classList.add("fa-solid", "fa-trash-can");
+        removeButton.setAttribute("title", "Delete book");
         removeButton.addEventListener("click", ()=>{
             //There should be a confirmation modal
             removeBook(bookTableRow);
@@ -102,6 +104,18 @@ function createLabel(inputId, innerText){
     return label;
 }
 
+function indicateInputIsRequired(input){
+    input.setAttribute("placeholder", "required!");
+    input.classList.toggle("red-border");
+}
+
+function clearInputsStyleToCheckAgain(inputs){
+    for (let input of inputs){
+        if (input.classList.contains("red-border")) input.classList.toggle("red-border");
+    }
+    return;
+}
+
 function displayForm(){
     // Don't create a new form if there's one already active.
     if (document.querySelector("form")) return;
@@ -129,6 +143,8 @@ function displayForm(){
     authorLabel.innerHTML += "<span title=required> * </span>";
     const numberOfPagesInput = createInput("number", "number-of-pages", "number-of-pages");
     const numberOfPagesLabel = createLabel("number-of-pages", "Number of pages");
+    const readStatusContainer = document.createElement("div");
+    readStatusContainer.classList.add("read-status-container");
     const readStatusInput = createInput("checkbox", "read-status", "has-been-read");
     const readStatusLabel = createLabel("read-status", "Have you read it?");
     const SUBMIT_BUTTON = document.createElement("button");
@@ -136,10 +152,17 @@ function displayForm(){
     SUBMIT_BUTTON.innerText = "Add book!";
     SUBMIT_BUTTON.addEventListener("click", ()=>{
         // When the form is submitted, check that the required fields have been filled.
+        clearInputsStyleToCheckAgain([titleInput, authorInput]);
         if (!titleInput.value || !authorInput.value){
-           alert("Please fill the required fields!");
+            if(!titleInput.value){
+                indicateInputIsRequired(titleInput);
+            }
+            if(!authorInput.value){
+                indicateInputIsRequired(authorInput);
+            }
             return;
         }
+        
         // If the form was submitted successfully, push the book to the library array, update the table and remove the modal.
         let title = titleInput.value;
         let author = authorInput.value;
@@ -151,7 +174,8 @@ function displayForm(){
     })
 
     // Append the elements created
-    let formChildNodes = [titleLabel, titleInput, authorLabel, authorInput, numberOfPagesLabel, numberOfPagesInput, readStatusLabel, readStatusInput, SUBMIT_BUTTON];
+    appendAllChildren(readStatusContainer, [readStatusLabel, readStatusInput]);
+    let formChildNodes = [titleLabel, titleInput, authorLabel, authorInput, numberOfPagesLabel, numberOfPagesInput, readStatusContainer, SUBMIT_BUTTON];
     appendAllChildren(FORM_MODAL, formChildNodes);
     OUTER_MODAL.appendChild(FORM_MODAL);
     BODY.appendChild(OUTER_MODAL);
