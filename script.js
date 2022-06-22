@@ -4,21 +4,21 @@ const table = document.querySelector("main > table > tbody");
 
 let myLibrary = [];
 
-function Book(title, author, numOfPages, hasBeenRead){
+function Book(title, author, numOfPages, readStatus){
     this.title = title;
     this.author = author;
     this.numOfPages = numOfPages;
-    this.hasBeenRead = hasBeenRead;
+    this.readStatus = readStatus;
 }
 
 Book.prototype.info = function(){
     let numberOfPages = (this.numOfPages === "Unknown") ? "unknown number of" : this.numOfPages;
-    let hasBeenRead = (this.hasBeenRead) ? "Has been read!" : "Hasn't been read yet!"
-    return `${this.title} by ${this.author}, ${numberOfPages} pages. ${hasBeenRead}`;
+    let readStatus = (this.readStatus) ? "Has been read!" : "Hasn't been read yet!"
+    return `${this.title} by ${this.author}, ${numberOfPages} pages. ${readStatus}`;
 }
 
-function addBookToLibrary(title, author, numOfPages, hasBeenRead){
-    let newBook = new Book(title, author, numOfPages, hasBeenRead);
+function addBookToLibrary(title, author, numOfPages, readStatus){
+    let newBook = new Book(title, author, numOfPages, readStatus);
     myLibrary.push(newBook);
 }
 
@@ -31,40 +31,49 @@ addBookToLibrary("Harry Potter and the Order of the Phoenix", "J.K. Rowling", 76
 addBookToLibrary("Harry Potter and the Half-Blood Prince", "J.K. Rowling", 607, false);
 addBookToLibrary("Harry Potter and the Deathly Hallows", "J.K. Rowling", 607, false);
 
-function displayBooks(){
+function removeBook(book){
+    let rowIndex = book.getAttribute("data-index");
+    myLibrary.splice(rowIndex, 1);
+}
+
+function clearTable(){
+    let books = document.querySelectorAll("table > tbody > tr");
+    for (let book of books){
+        book.remove();
+    }
+}
+
+function updateTable(){
+    clearTable()
+    populateTableWithBooks();
+}
+
+function populateTableWithBooks(){
     for (book of myLibrary){
-        let bookInTable = document.createElement("tr");
-        bookInTable.classList.add("book");
-        bookInTable.setAttribute("data-index", document.querySelectorAll("tr").length - 1);
+        let bookTableRow = document.createElement("tr");
+        bookTableRow.classList.add("book");
+        bookTableRow.setAttribute("data-index", document.querySelectorAll("tr").length - 1);
         let title = document.createElement("td");
         title.innerText = book.title;
         let author = document.createElement("td");
         author.innerText = book.author;
         let numberOfPages = document.createElement("td");
         numberOfPages.innerText = book.numOfPages;
-        let hasBeenRead = document.createElement("td");
-        hasBeenRead.innerText = (book.hasBeenRead) ? "Has been read!" : "Hasn't been read yet!"
+        let readStatus = document.createElement("td");
+        readStatus.innerText = (book.readStatus) ? "read" : "unread"
         let removeButtonCell = document.createElement("td");
         let removeButton = document.createElement("button");
         removeButton.addEventListener("click", ()=>{
-            let rowIndex = removeButton.parentNode.parentNode.getAttribute("data-index");
-            myLibrary.splice(rowIndex, 1);
-            updateBooks();
+            //There should be a confirmation modal
+            removeBook(bookTableRow);
+            updateTable();
         })
         removeButtonCell.appendChild(removeButton);
-        appendAllChildren(bookInTable, [title, author, numberOfPages, hasBeenRead, removeButtonCell]);
-        table.appendChild(bookInTable);
+        appendAllChildren(bookTableRow, [title, author, numberOfPages, readStatus, removeButtonCell]);
+        table.appendChild(bookTableRow);
     }
 }
-displayBooks();
-
-function updateBooks(){
-    let books = document.querySelectorAll("table > tbody > tr");
-    for (let book of books){
-        book.remove();
-    }
-    displayBooks();
-}
+populateTableWithBooks();
 
 ADD_NEW_BOOK_BUTTON.addEventListener("click", displayForm);
 
@@ -94,9 +103,24 @@ function createLabel(inputId, innerText){
 }
 
 function displayForm(){
+    // Don't create a new form if there's one already active.
     if (document.querySelector("form")) return;
+
+    // Create the form modal.
     const FORM_MODAL = document.createElement("form");
+    FORM_MODAL.classList.add("form-modal");
     setMultipleAttributes(FORM_MODAL, {"method":"POST", "action":""});
+
+    // Create an outer section which when clicked will close the modal.
+    // This lesson by Wes Bos was super helpful regarding making the modal close. https://wesbos.com/javascript/06-serious-practice-exercises/click-outside-modal
+    const OUTER_MODAL = document.createElement("div");
+    OUTER_MODAL.classList.add("outer-modal");
+    OUTER_MODAL.addEventListener("click", (e)=>{
+        const isOutside = !e.target.closest(".form-modal");
+        if (isOutside) {OUTER_MODAL.remove();};
+    });
+
+    // Create the inputs.
     const titleInput = createInput("text", "title", "title");
     const titleLabel = createLabel("title", "Title");
     titleLabel.innerHTML += "<span title=required> * </span>";
@@ -105,25 +129,30 @@ function displayForm(){
     authorLabel.innerHTML += "<span title=required> * </span>";
     const numberOfPagesInput = createInput("number", "number-of-pages", "number-of-pages");
     const numberOfPagesLabel = createLabel("number-of-pages", "Number of pages");
-    const hasBeenReadInput = createInput("checkbox", "has-been-read", "has-been-read");
-    const hasBeenReadLabel = createLabel("has-been-read", "Have you read it?");
+    const readStatusInput = createInput("checkbox", "read-status", "has-been-read");
+    const readStatusLabel = createLabel("read-status", "Have you read it?");
     const SUBMIT_BUTTON = document.createElement("button");
     SUBMIT_BUTTON.setAttribute("type", "button");
     SUBMIT_BUTTON.innerText = "Add book!";
     SUBMIT_BUTTON.addEventListener("click", ()=>{
+        // When the form is submitted, check that the required fields have been filled.
         if (!titleInput.value || !authorInput.value){
            alert("Please fill the required fields!");
             return;
         }
+        // If the form was submitted successfully, push the book to the library array, update the table and remove the modal.
         let title = titleInput.value;
         let author = authorInput.value;
         let numberOfPages = (numberOfPagesInput.value.length !== 0) ? numberOfPagesInput.value : "Unknown";
-        let hasBeenRead = hasBeenReadInput.checked;
-        addBookToLibrary(title, author, numberOfPages, hasBeenRead);
-        updateBooks();
-        FORM_MODAL.remove();
+        let readStatus = readStatusInput.checked;
+        addBookToLibrary(title, author, numberOfPages, readStatus);
+        updateTable();
+        OUTER_MODAL.remove();
     })
-    let formChildNodes = [titleLabel, titleInput, authorLabel, authorInput, numberOfPagesLabel, numberOfPagesInput, hasBeenReadLabel, hasBeenReadInput, SUBMIT_BUTTON];
+
+    // Append the elements created
+    let formChildNodes = [titleLabel, titleInput, authorLabel, authorInput, numberOfPagesLabel, numberOfPagesInput, readStatusLabel, readStatusInput, SUBMIT_BUTTON];
     appendAllChildren(FORM_MODAL, formChildNodes);
-    BODY.appendChild(FORM_MODAL);
+    OUTER_MODAL.appendChild(FORM_MODAL);
+    BODY.appendChild(OUTER_MODAL);
 }
