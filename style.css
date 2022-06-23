@@ -1,12 +1,29 @@
+*{
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+}
+
 html, body{
     margin: 0;
     height: 100%
 }
 
-
 header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: red;
     height: 100px;
+}
+
+header > p{
+    margin-left: 30px;
+    font-size: 30px;
+}
+
+header > i{
+    margin-right: 30px;
+    height: 40px;
 }
 
 main{
@@ -14,6 +31,7 @@ main{
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    font-weight: 100;
 }
 
 table{
@@ -34,9 +52,41 @@ table{
 
 .form-modal{
     display: flex;
+    background-color: antiquewhite;
     flex-direction: column;
     width: 200px;
     padding: 10px;
     border-style: solid;
     margin-top: -100px;
+    animation-name: slide-in-from-the-right;
+    animation-duration: 0.2s;
+    animation-iteration-count: 1;
 }
+
+.slide-out-to-the-left{
+    animation-name: slide-out-to-the-left;
+    animation-duration: 0.2s;
+    animation-iteration-count: 1;
+}
+
+.read-status-container{
+    display: flex;
+    gap: 5px;
+}
+
+span[title="required"]{
+    color: red;
+}
+
+.red-border{
+    border: solid red;
+}
+@keyframes slide-in-from-the-right {
+    0% {transform: translateX(100vw) scale(0.1); opacity: 0;}
+    100% {transform: translateX(0) scale(1); opacity: 1;}
+}
+@keyframes slide-out-to-the-left {
+    0% {transform: translateX(0) scale(1); opacity: 1;}
+    100% {transform: translateX(-100vw) scale(0.1); opacity: 0;}
+}
+  

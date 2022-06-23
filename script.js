@@ -116,6 +116,11 @@ function clearInputsStyleToCheckAgain(inputs){
     return;
 }
 
+function toggleAnimation(element, animationName){
+    element.classList.toggle(animationName);
+    return;
+}
+
 function displayForm(){
     // Don't create a new form if there's one already active.
     if (document.querySelector("form")) return;
@@ -131,7 +136,10 @@ function displayForm(){
     OUTER_MODAL.classList.add("outer-modal");
     OUTER_MODAL.addEventListener("click", (e)=>{
         const isOutside = !e.target.closest(".form-modal");
-        if (isOutside) {OUTER_MODAL.remove();};
+        if (isOutside) {
+            toggleAnimation(FORM_MODAL, "slide-out-to-the-left");
+            setTimeout(()=>{OUTER_MODAL.remove();}, 100);
+        };
     });
 
     // Create the inputs.
@@ -162,7 +170,6 @@ function displayForm(){
             }
             return;
         }
-        
         // If the form was submitted successfully, push the book to the library array, update the table and remove the modal.
         let title = titleInput.value;
         let author = authorInput.value;
@@ -170,7 +177,8 @@ function displayForm(){
         let readStatus = readStatusInput.checked;
         addBookToLibrary(title, author, numberOfPages, readStatus);
         updateTable();
-        OUTER_MODAL.remove();
+        toggleAnimation(FORM_MODAL, "slide-out-to-the-left");
+        setTimeout(()=>{OUTER_MODAL.remove();}, 100);
     })
 
     // Append the elements created
