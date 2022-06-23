@@ -17,6 +17,10 @@ Book.prototype.info = function(){
     return `${this.title} by ${this.author}, ${numberOfPages} pages. ${readStatus}`;
 }
 
+Book.prototype.toggleReadStatus = function(){
+    this.readStatus = !this.readStatus;
+}
+
 function addBookToLibrary(title, author, numOfPages, readStatus){
     let newBook = new Book(title, author, numOfPages, readStatus);
     myLibrary.push(newBook);
@@ -59,19 +63,29 @@ function populateTableWithBooks(){
         author.innerText = book.author;
         let numberOfPages = document.createElement("td");
         numberOfPages.innerText = book.numOfPages;
-        let readStatus = document.createElement("td");
-        readStatus.innerText = (book.readStatus) ? "read" : "unread"
+        let readStatusCell = document.createElement("td");
+        let readStatus = document.createElement("i");
+        let currentReadStatus = (book.readStatus) ? "fa-square-check" : "fa-square-xmark";
+        readStatus.classList.add("fa-solid", currentReadStatus);
+        readStatus.setAttribute("title", "Click to toggle");
+        readStatus.addEventListener("click", ()=>{
+            let index = bookTableRow.getAttribute("data-index");
+            myLibrary[index].toggleReadStatus();
+            updateTable();
+        })
         let removeButtonCell = document.createElement("td");
         let removeButton = document.createElement("i");
-        removeButton.classList.add("fa-solid", "fa-trash-can");
+        removeButton.classList.add("fa-regular", "fa-trash-can");
         removeButton.setAttribute("title", "Delete book");
         removeButton.addEventListener("click", ()=>{
-            //There should be a confirmation modal
+            let userCancels = !confirm(`Are you sure you want to delete ${title.innerText}?`);
+            if (userCancels) return;
             removeBook(bookTableRow);
             updateTable();
         })
+        readStatusCell.appendChild(readStatus);
         removeButtonCell.appendChild(removeButton);
-        appendAllChildren(bookTableRow, [title, author, numberOfPages, readStatus, removeButtonCell]);
+        appendAllChildren(bookTableRow, [title, author, numberOfPages, readStatusCell, removeButtonCell]);
         table.appendChild(bookTableRow);
     }
 }
