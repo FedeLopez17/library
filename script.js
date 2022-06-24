@@ -1,6 +1,6 @@
 const ADD_NEW_BOOK_BUTTON = document.querySelector("i[title='Add new book!']");
 const BODY = document.querySelector("body");
-const table = document.querySelector("main > table > tbody");
+const table = document.querySelector("table > tbody");
 
 let myLibrary = [];
 
@@ -152,7 +152,7 @@ function displayForm(){
         const isOutside = !e.target.closest(".form-modal");
         if (isOutside) {
             toggleAnimation(FORM_MODAL, "slide-out-to-the-left");
-            setTimeout(()=>{OUTER_MODAL.remove();}, 100);
+            setTimeout(()=>{OUTER_MODAL.remove();}, 150);
         };
     });
 
@@ -192,7 +192,7 @@ function displayForm(){
         addBookToLibrary(title, author, numberOfPages, readStatus);
         updateTable();
         toggleAnimation(FORM_MODAL, "slide-out-to-the-left");
-        setTimeout(()=>{OUTER_MODAL.remove();}, 100);
+        setTimeout(()=>{OUTER_MODAL.remove();}, 150);
     })
 
     // Append the elements created
