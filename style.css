@@ -1,6 +1,6 @@
 *{
     box-sizing: border-box;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 html, body{
@@ -9,13 +9,26 @@ html, body{
 }
 
 :root{
-    /* Palette: https://coolors.co/palette/dad7cd-a3b18a-588157-3a5a40-344e41 */
-    --color-600: #344E41;
-    --color-500: #3A5A40;
-    --color-400: #588157;
-    --color-300: #A3B18A;
-    --color-200: #DAD7CD;
-    --color-100: #FFFFFF;
+    /* Palette 1: https://coolors.co/palette/ede0d4-e6ccb2-ddb892-b08968-9c6644-7f5539
+    --color-600: #718355;
+    --color-500: #87986A;
+    --color-400: #97A97C;
+    --color-300: #B5C99A;
+    --color-200: #CFE1B9;
+    --color-100: #E9F5DB; */
+
+    /* Palette 2: https://coolors.co/palette/ede0d4-e6ccb2-ddb892-b08968-9c6644-7f5539 */
+    --color-600: #7F5539;
+    --color-500: #9C6644;
+    --color-400: #B08968;
+    --color-300: #DDB892;
+    --color-200: #E6CCB2;
+    --color-100: #EDE0D4;
+}
+
+::selection{
+    background-color: var(--color-100);
+    color: var(--color-600);
 }
 
 body{
@@ -36,6 +49,7 @@ header{
 header > p{
     margin-left: 30px;
     font-size: 30px;
+    font-weight: 900;
 }
 
 header > i{
@@ -46,20 +60,22 @@ header > i{
 
 i:hover{
     transform: scale(1.15);
+    cursor: pointer;
 }
 
 main{
-    height: calc(100% - 100px);
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    font-weight: 100;
+    font-weight: 300;
 }
 
 table{
     margin-top: 200px;
-    width: 90%;
+    width: 80%;
     border-collapse: collapse;
+    text-align: left;
+    background-color: var(--color-200);
 }
 
 
@@ -69,13 +85,25 @@ tr:nth-child(even){
 
 tbody > tr:hover{
     background-color: var(--color-400);
+    color: white;
+}
+
+tbody i{
+    margin-right: 10px;
+}
+
+i.fa-check, i.fa-xmark{
+    margin: 0 20px;
 }
 
 thead{
-    text-align: left;
     background-color: var(--color-500);
-    border-bottom-style: solid;
-    border-color: black;
+    border-bottom-style: double;
+    border-color: var(--color-100);
+}
+
+span.styling-purposes{
+    margin-left: 10px;
 }
 
 th{
@@ -92,6 +120,7 @@ td{
     position: absolute;
     justify-content: center;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
     height: 100%;
     width: 100%;
     top: 0;
@@ -100,15 +129,44 @@ td{
 
 .form-modal{
     display: flex;
-    background-color: var(--color-500);
+    background-color: var(--color-200);
+    color: var(--color-600);
+    border: 1px var(--color-600) solid;
     flex-direction: column;
-    width: 200px;
-    padding: 10px;
-    border-style: solid;
-    margin-top: -100px;
+    width: min(40%, 500px);
+    padding: 40px 10px;
+    margin-top: -50px;
+    border-radius: 30px 30px 0 0;
     animation-name: slide-in-from-the-right;
     animation-duration: 0.2s;
     animation-iteration-count: 1;
+}
+
+.form-modal > *{
+    width: 70%;
+    margin: 0 auto;
+}
+
+.form-modal > button{
+    width: 40%;
+    margin-top: 20px;
+    padding: 6px;
+    background-color: var(--color-600);
+    color: var(--color-100);
+    border: solid var(--color-100) 2px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.form-modal > button:hover{
+    transform: scale(1.1);
+    background-color: var(--color-100);
+    color: var(--color-600);
+    border-color: var(--color-600);
+}
+
+.form-modal input{
+    margin-bottom: 10px;
 }
 
 .slide-out-to-the-left{
@@ -127,7 +185,7 @@ span[title="required"]{
 }
 
 .red-border{
-    border: solid red;
+    border: solid red 1px;
 }
 @keyframes slide-in-from-the-right {
     0% {transform: translateX(100vw) scale(0.1); opacity: 0;}
@@ -137,4 +195,22 @@ span[title="required"]{
     0% {transform: translateX(0) scale(1); opacity: 1;}
     100% {transform: translateX(-100vw) scale(0.1); opacity: 0;}
 }
-  
+
+@media (max-width: 1024px){
+    .not-important{
+        display: none;
+    }
+}
+
+@media (max-width: 769px){
+    .not-a-priority{
+        display: none;
+    }
+}
+
+@media (max-aspect-ratio: 12/16){
+    .form-modal{
+        width: 100%;
+    }
+    
+}
