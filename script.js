@@ -57,15 +57,19 @@ function populateTableWithBooks(){
         let bookTableRow = document.createElement("tr");
         bookTableRow.classList.add("book");
         bookTableRow.setAttribute("data-index", document.querySelectorAll("tr").length - 1);
+        let titleOuterSpan = document.createElement("span");
+        titleOuterSpan.classList.add("styling-purposes");
         let title = document.createElement("td");
         title.innerText = book.title;
         let author = document.createElement("td");
+        author.classList.add("not-a-priority");
         author.innerText = book.author;
         let numberOfPages = document.createElement("td");
+        numberOfPages.classList.add("not-important");
         numberOfPages.innerText = book.numOfPages;
         let readStatusCell = document.createElement("td");
         let readStatus = document.createElement("i");
-        let currentReadStatus = (book.readStatus) ? "fa-square-check" : "fa-square-xmark";
+        let currentReadStatus = (book.readStatus) ? "fa-check" : "fa-xmark";
         readStatus.classList.add("fa-solid", currentReadStatus);
         readStatus.setAttribute("title", "Click to toggle");
         readStatus.addEventListener("click", ()=>{
@@ -85,7 +89,8 @@ function populateTableWithBooks(){
         })
         readStatusCell.appendChild(readStatus);
         removeButtonCell.appendChild(removeButton);
-        appendAllChildren(bookTableRow, [title, author, numberOfPages, readStatusCell, removeButtonCell]);
+        titleOuterSpan.appendChild(title);
+        appendAllChildren(bookTableRow, [titleOuterSpan, author, numberOfPages, readStatusCell, removeButtonCell]);
         table.appendChild(bookTableRow);
     }
 }
@@ -196,7 +201,7 @@ function displayForm(){
     })
 
     // Append the elements created
-    appendAllChildren(readStatusContainer, [readStatusLabel, readStatusInput]);
+    appendAllChildren(readStatusContainer, [readStatusInput, readStatusLabel]);
     let formChildNodes = [titleLabel, titleInput, authorLabel, authorInput, numberOfPagesLabel, numberOfPagesInput, readStatusContainer, SUBMIT_BUTTON];
     appendAllChildren(FORM_MODAL, formChildNodes);
     OUTER_MODAL.appendChild(FORM_MODAL);
