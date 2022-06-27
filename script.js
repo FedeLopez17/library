@@ -192,7 +192,7 @@ function displayForm(){
         // If the form was submitted successfully, push the book to the library array, update the table and remove the modal.
         let title = titleInput.value;
         let author = authorInput.value;
-        let numberOfPages = (numberOfPagesInput.value.length !== 0) ? numberOfPagesInput.value : "Unknown";
+        let numberOfPages = (numberOfPagesInput.value.length > 0) ? numberOfPagesInput.value : "Unknown";
         let readStatus = readStatusInput.checked;
         addBookToLibrary(title, author, numberOfPages, readStatus);
         updateTable();
