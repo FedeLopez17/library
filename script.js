@@ -2,43 +2,55 @@ const ADD_NEW_BOOK_BUTTON = document.querySelector("i[title='Add new book!']");
 const BODY = document.querySelector("body");
 const table = document.querySelector("table > tbody");
 
-let myLibrary = [];
+class Book{
+    constructor(title, author, numOfPages, readStatus){
+        this.title = title;
+        this.author = author;
+        this.numOfPages = numOfPages;
+        this.readStatus = readStatus;
+    }
 
-function Book(title, author, numOfPages, readStatus){
-    this.title = title;
-    this.author = author;
-    this.numOfPages = numOfPages;
-    this.readStatus = readStatus;
+    toggleReadStatus(){
+        this.readStatus = !this.readStatus;
+    }
+
+    get info(){
+        const numberOfPages = (this.numOfPages === "Unknown") ? "unknown number of" : this.numOfPages;
+        const readStatus = (this.readStatus) ? "Has been read!" : "Hasn't been read yet!"
+        return `${this.title} by ${this.author}, ${numberOfPages} pages. ${readStatus}`;
+    }
 }
 
-Book.prototype.info = function(){
-    let numberOfPages = (this.numOfPages === "Unknown") ? "unknown number of" : this.numOfPages;
-    let readStatus = (this.readStatus) ? "Has been read!" : "Hasn't been read yet!"
-    return `${this.title} by ${this.author}, ${numberOfPages} pages. ${readStatus}`;
-}
+const myLibrary = (function(){
 
-Book.prototype.toggleReadStatus = function(){
-    this.readStatus = !this.readStatus;
-}
+    const _library = [];
 
-function addBookToLibrary(title, author, numOfPages, readStatus){
-    let newBook = new Book(title, author, numOfPages, readStatus);
-    myLibrary.push(newBook);
-}
+    function addBook(title, author, numOfPages, readStatus){
+        const book = new Book(title, author, numOfPages, readStatus);
+        _library.push(book);
+    }
+
+    function removeBook(book){
+        _library.splice(book, 1);
+    }
+
+    function getBooks(){
+        return _library.slice(0);
+    }
+
+    return{addBook, removeBook, getBooks};
+})();
+
 
 // Hard coded books for test purposes
-addBookToLibrary("Harry Potter and the Philosopher's Stone", "J.K. Rowling", 223, true);
-addBookToLibrary("Harry Potter and the Chamber of Secrets", "J.K. Rowling", 251, true);
-addBookToLibrary("Harry Potter and the Prisoner of Azkaban", "J.K. Rowling", 317, true);
-addBookToLibrary("Harry Potter and the Goblet of Fire", "J.K. Rowling", 636, true);
-addBookToLibrary("Harry Potter and the Order of the Phoenix", "J.K. Rowling", 766, false);
-addBookToLibrary("Harry Potter and the Half-Blood Prince", "J.K. Rowling", 607, false);
-addBookToLibrary("Harry Potter and the Deathly Hallows", "J.K. Rowling", 607, false);
+myLibrary.addBook("Harry Potter and the Philosopher's Stone", "J.K. Rowling", 223, true);
+myLibrary.addBook("Harry Potter and the Chamber of Secrets", "J.K. Rowling", 251, true);
+myLibrary.addBook("Harry Potter and the Prisoner of Azkaban", "J.K. Rowling", 317, true);
+myLibrary.addBook("Harry Potter and the Goblet of Fire", "J.K. Rowling", 636, true);
+myLibrary.addBook("Harry Potter and the Order of the Phoenix", "J.K. Rowling", 766, false);
+myLibrary.addBook("Harry Potter and the Half-Blood Prince", "J.K. Rowling", 607, false);
+myLibrary.addBook("Harry Potter and the Deathly Hallows", "J.K. Rowling", 607, false);
 
-function removeBook(book){
-    let rowIndex = book.getAttribute("data-index");
-    myLibrary.splice(rowIndex, 1);
-}
 
 function clearTable(){
     let books = document.querySelectorAll("table > tbody > tr");
@@ -53,7 +65,7 @@ function updateTable(){
 }
 
 function populateTableWithBooks(){
-    for (book of myLibrary){
+    for (const book of myLibrary.getBooks()){
         let bookTableRow = document.createElement("tr");
         bookTableRow.classList.add("book");
         bookTableRow.setAttribute("data-index", document.querySelectorAll("tr").length - 1);
@@ -74,7 +86,7 @@ function populateTableWithBooks(){
         readStatus.setAttribute("title", "Click to toggle");
         readStatus.addEventListener("click", ()=>{
             let index = bookTableRow.getAttribute("data-index");
-            myLibrary[index].toggleReadStatus();
+            myLibrary.getBooks()[index].toggleReadStatus();
             updateTable();
         })
         let removeButtonCell = document.createElement("td");
@@ -84,7 +96,8 @@ function populateTableWithBooks(){
         removeButton.addEventListener("click", ()=>{
             let userCancels = !confirm(`Are you sure you want to delete ${title.innerText}?`);
             if (userCancels) return;
-            removeBook(bookTableRow);
+            const index = bookTableRow.getAttribute("data-index");
+            myLibrary.removeBook(index);
             updateTable();
         })
         readStatusCell.appendChild(readStatus);
@@ -194,7 +207,7 @@ function displayForm(){
         let author = authorInput.value;
         let numberOfPages = (numberOfPagesInput.value > 0) ? numberOfPagesInput.value : "Unknown";
         let readStatus = readStatusInput.checked;
-        addBookToLibrary(title, author, numberOfPages, readStatus);
+        myLibrary.addBook(title, author, numberOfPages, readStatus);
         updateTable();
         toggleAnimation(FORM_MODAL, "slide-out-to-the-left");
         setTimeout(()=>{OUTER_MODAL.remove();}, 150);
