@@ -12,7 +12,8 @@ This simple library app is part of [The Odin Project's curriculum](https://www.t
 With it, you can add books, which are stored as objects within an array and displayed in a table, and remove them as well.<br>
 The purpose of this project was to get familiar with objects, objects constructors, and prototypes.<br>
 Admittedly, it's completely useless at the moment, as the books aren't really stored anywhere and will disappear once the page is reloaded.
-However, the goal is to fix those issues (once I know how), and make it usable in an upcoming iteration.
+~~However, the goal is to fix those issues (once I know how), and make it usable in an upcoming iteration.~~<br>
+**Edit: I decided to leave it like this as an evidence of my progress, so when I look back, I can tell how much I've improved.**
 
 ## Demonstration:
 
